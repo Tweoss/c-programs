@@ -9,9 +9,9 @@ void dht11_dat(double *temp, double *humid);
 int digitornot(const char *s);
 int request(char *strings[], int stringi);
 int cmpfunc(const void * a, const void * b);
-void mean(double array[], int arrayi, const char *s);
+double mean(double array[], int arrayi, const char *s);
 void fivennum(double array[], int size, const char *s);
-double numbers(double temp[], double humid[], int tempi, int humi);
+void numbers(double temp[], double humid[], int tempi, int humi);
 
 int main()
 {
@@ -21,10 +21,8 @@ int main()
 
 	double temp[22] = {1,1,1,2,2,2,2,3,3,3,3,4,5,6,7,8,8,8,8,9,9,9};
 	double humi[5]  = {0,1,2,5,6};
-	// printf("%lu",sizeof(temp)/sizeof(double));
-	numbers(temp,humi,22, 5); //sizeof(temp),sizeof(humi));
-	// char *testarray[5] = {"abc","hehe","ree","meeow", "test"};
-	// printf("\n%d",request(testarray,5));
+
+	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
 	return 0;
 }
 
@@ -78,7 +76,7 @@ int cmpfunc (const void * a, const void * b) {
    return ( *(double*)a - *(double*)b );
 }
 
-void mean(double array[], int arrayi, const char *s){
+double mean(double array[], int arrayi, const char *s){
 	double tempvar = 0;
 	int i;
 	for (i=0;i<arrayi;i++){
@@ -86,6 +84,7 @@ void mean(double array[], int arrayi, const char *s){
 	}
 	tempvar = tempvar/arrayi;
 	printf("The mean %s is %lf.\n",s,tempvar);
+	return tempvar;
 }
 
 void fivenum(double array[], int size, const char *s){
@@ -145,7 +144,7 @@ void mode(double array[], int size, const char *s){
 		}
 	}
 	if (!((int) tempvar[0])){ // if there are no modes
-		printf("There are no modes for %s.",s);
+		printf("There are no modes for %s.\n",s);
 	}
 	else {	
 	printf("The mode(s) for %s are {",s);
@@ -157,14 +156,18 @@ void mode(double array[], int size, const char *s){
 	}
 }
 
-double numbers(double temp[] , double humi[], int tempi, int humii){
+void numbers(double temp[] , double humi[], int tempi, int humii){
 	double tempvar[4] = {}; //for interm calcs
-	int i; //arbitrary index
 	qsort(temp,tempi,sizeof(double),cmpfunc);
 	qsort(humi,humii,sizeof(double),cmpfunc);
-	int selector[3] = {}; //selector with depth up to 3
+
+	int selector[3] = {}; //selector with depth up to 3 (prob only use 1)
 	char *depth1[] = {"Mean","Five-Number Summary","Mode","Standard Deviation","Skewness","Kurtosis","r","R^2","Least-Squares Regression Line","Quadratic Regression","Sinusoidal Regression"};
 	selector[0] = request(depth1,11);
+
+	int i, j; //arbitrary index
+
+
 	switch (selector[0])
 	{
 	//MEAN
@@ -194,9 +197,9 @@ double numbers(double temp[] , double humi[], int tempi, int humii){
 	// 	break;
 	}
 	
-	// int i;
-	// for( i = 0 ; i < 5; i++ ) {   
-    //   printf("%f ", values[i]);
-   	// }
-	return 0;
+	char *cont[] = {"Stop","Continue"};
+	if (request(cont,2)-1){
+		numbers(temp,humi,tempi,humii);
+	}
+
 }
