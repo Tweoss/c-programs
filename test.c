@@ -105,9 +105,8 @@ double numbers(double temp[] , double humi[], int tempi, int humii){
 		//FIVE-NUMBER SUMMARY
 	case 2: {
 		tempvar[0] = 0;
-		double fivenum[5] = {}; 
-		{
 		//five-number summary
+		double fivenum[5] = {}; 
 		//Median
 		tempvar[0] = ceil((double)tempi/2);  //the "middle" (btw double forces decimal calculation)
 		tempvar[1] = ceil((double)(tempi+1)/2); //one above the middle for even-number sized arrays
@@ -125,8 +124,6 @@ double numbers(double temp[] , double humi[], int tempi, int humii){
 		//Max
 		fivenum[4] = temp[tempi-1];
 		printf("The five-number summary for temperature is {%lf,%lf,%lf,%lf,%lf}.\n",fivenum[0],fivenum[1],fivenum[2],fivenum[3],fivenum[4]);
-		}
-		{
 		tempvar[0] = ceil((double)humii/2);  //the "middle"
 		tempvar[1] = ceil((double)(humii+1)/2); //one above the middle for even-number sized arrays
 		fivenum[2] = (humi[(int) tempvar[0]-1]+humi[(int) tempvar[1]-1])/2; //subtract one for 0 indexing
@@ -144,18 +141,12 @@ double numbers(double temp[] , double humi[], int tempi, int humii){
 		fivenum[4] = humi[humii-1];
 		printf("The five-number summary for humidity is {%lf,%lf,%lf,%lf,%lf}.\n",fivenum[0],fivenum[1],fivenum[2],fivenum[3],fivenum[4]);
 		}
-		}
 		break;
 		//MODE
 	case 3: {
 		tempvar[0] = 0; //kinda useless but eh
-		//set tempvar to max
-		// if (tempi > humii){tempvar[0] = tempi/2;} else {tempvar[0] = humii/2;}
 		double mode[humii/2];//the mode(s)
-		// double mode[(int) tempvar[0]];//the mode(s)
-		tempvar[0] = 0; //kinda useless but eh
 		int modii = 0;; //the current index of the mode
-		
 		// (which by this method can be at most 1/2 of total #elements)
 		//note: this will multiple modes (if they exist)
 		tempvar[1] = 0;	// stores the score of the highscore
@@ -164,44 +155,6 @@ double numbers(double temp[] , double humi[], int tempi, int humii){
 		for (i=0;i<tempi;i++){
 			if (tempvar[2] != temp[i]){ //New number
 				tempvar[2] = temp[i]; //store new current #
-				tempvar[3] = 1; //store new score (1)
-				// printf("NEW: %lf,%d\n",tempvar[2],i);
-			}
-			else { //Not new number
-				tempvar[3]++; //increase current score
-
-				if (tempvar[3] > tempvar[1]){ // if greater than highscore
-					memset(mode, 0, tempi/2 * sizeof(mode));
-
-					tempvar[1] = tempvar[3];
-					// printf("NEW HIGH: %lf,%d\n",tempvar[2],(int)tempvar[1]);
-					mode[0] = tempvar[2];
-					modii = 1; // 
-				} else 
-				if (tempvar[3] == tempvar[1]){ // if equals the highscore
-					// tempvar[0] = tempvar[2];
-					mode[modii] = tempvar[2];
-					modii++;
-					// printf("ANOT HIGH: %lf,%d\n",tempvar[2],(int)tempvar[1]);
-				}
-			}
-		}
-		printf("The mode(s) for temperature are {");
-		printf("%lf",mode[0]);
-		for (i=1;i<modii;i++){
-			printf(",%lf",mode[i]);
-		}
-		printf("} with multiplicity %d.",(int)tempvar[1]);
-		/*
-		{
-		// (which by this method can be at most 1/2 of total #elements)
-		//note: this will multiple modes (if they exist)
-		tempvar[1] = 0;	// stores the score of the highscore
-		tempvar[2] = 0;	//stores the current #
-		tempvar[3] = 0;	// stores the score of current #
-		for (i=0;i<tempi;i++){
-			if (tempvar[2] != humi[i]){ //New number
-				tempvar[2] = humi[i]; //store new current #
 				tempvar[3] = 1; //store new score (1)
 				// printf("NEW: %lf,%d\n",tempvar[2],i);
 			}
@@ -227,10 +180,9 @@ double numbers(double temp[] , double humi[], int tempi, int humii){
 		printf("The mode(s) for temperature are {");
 		printf("%lf",mode[0]);
 		for (i=1;i<modii;i++){
-			printf(",%lf",mode[i]);
+			printf(",%lf",mode[i],modii);
 		}
-		printf("} with multiplicity %d.",(int)tempvar[1]);
-		}*/
+		printf("with multiplicity %lf",tempvar[1]);
 		}
 		break;
 
