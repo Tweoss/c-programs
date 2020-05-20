@@ -1,37 +1,58 @@
-
- {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "shell",
-			"label": "C: gcc compile active file",
-			"command": "gcc",
-			"args": [
-				"${fileBasenameNoExtension}.c"
-			],
-			"problemMatcher": [
-				"$gcc"
-			],
-			"group": "build"
-		},
-		{
-			"type": "shell",
-			"label": "C: run active file",
-			"command": " './a.out' ",
-			"problemMatcher": []
-		},
-		{
-			"label": "Build and Exec",
-			"dependsOn": [
-				"C: gcc compile active file",
-				"C: run active file"
-			],
-			"dependsOrder": "sequence",
-			"problemMatcher": [],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
-		}
-	]
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C: gcc compile active file",
+            "command": "gcc",
+            "args": [
+                "${fileBasenameNoExtension}.c"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
+        {
+            "type": "shell",
+            "label": "C: run active file",
+            "command": " './a.out' ",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build and Exec",
+            "dependsOn": [
+                "C: gcc compile active file",
+                "C: run active file"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "gcc build active file",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            }
+        }
+    ]
 }
