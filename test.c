@@ -8,10 +8,10 @@
 
 void dht11_dat(double *temp, double *humid);
 int digitornot(const char *s);
-int request(char *strings[], int stringi);
+int requ(char *strings[], int stringi);
 int cmpfunc(const void * a, const void * b);
 double mean(double array[], int arrayi, const char *s, bool shouldDisplay);
-void fivennum(double array[], int size, const char *s);
+void five(double array[], int size, const char *s);
 void numbers(double temp[], double humid[], int tempi, int humi);
 double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust);
 
@@ -56,7 +56,7 @@ int digitornot(const char *s)
 	return 1;
 }
 //displays options, returns the selected
-int request(char *strings[], int stringi){
+int requ(char *strings[], int stringi){
 	int i;
 	char input[10] = {};
 	for (i = 0; i < stringi; i++){
@@ -215,7 +215,7 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 
 	int selector[3] = {}; //selector with depth up to 3 (prob only use 1)
 	char *depth1[] = {"Mean","Five-Number Summary","Mode","Standard Deviation","Skewness","Kurtosis","r","R^2","Least-Squares Regression Line","Quadratic Regression","Sinusoidal Regression"};
-	selector[0] = request(depth1,11);
+	selector[0] = requ(depth1,11);
 
 	int i, j; //arbitrary index
 	// double calcval[2][2]; //mean, stddev (avoid recalc)

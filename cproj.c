@@ -8,12 +8,14 @@
 
 void dht11_dat(double *temp, double *humid);
 int digitornot(const char *s);
-int request(char *strings[], int stringi);
+int requ(char *strings[], int stringi);
 int cmpfunc(const void * a, const void * b);
 double mean(double array[], int arrayi, const char *s, bool shouldDisplay);
-void fivennum(double array[], int size, const char *s);
+void five(double array[], int size, const char *s);
 void numbers(double temp[], double humid[], int tempi, int humi);
 double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust);
+double skew(double array[], int arrayi, const char*s, bool shouldDisplay);
+double kurt(double array[], int arrayi, const char*s);
 
 
 int main()
@@ -21,8 +23,6 @@ int main()
 	double temperature;
 	double humidity;
 	dht11_dat(&temperature, &humidity);
-
-	
 
 	double temp[20] = {0, 3, 4, 1, 2, 3, 0, 2, 1, 3, 2, 0, 2, 2, 3, 2, 5, 2, 3, 999};
 	double humi[5]  = {0,1,2,5,6};
@@ -56,7 +56,7 @@ int digitornot(const char *s)
 	return 1;
 }
 //displays options, returns the selected
-int request(char *strings[], int stringi){
+int    requ(char *strings[], int stringi){
 	int i;
 	char input[10] = {};
 	for (i = 0; i < stringi; i++){
@@ -77,7 +77,7 @@ int request(char *strings[], int stringi){
 	return atoi(input);
 }
 //for qsorting
-int cmpfunc (const void * a, const void * b) {
+int    cmpfunc (const void * a, const void * b) {
    return ( *(double*)a - *(double*)b );
 }
 //calculates mean
@@ -94,7 +94,7 @@ double mean(double array[], int arrayi, const char *s, bool shouldDisplay){
 	return tempvar;
 }
 //calculates five-number summary
-void fivenum(double array[], int size, const char *s){
+void   fivenum(double array[], int size, const char *s){
 	double tempvar[2];
 	double summary[5];
 	//Median
@@ -116,7 +116,7 @@ void fivenum(double array[], int size, const char *s){
 	printf("The five-number summary for %s is {%lf,%lf,%lf,%lf,%lf}.\n",s,summary[0],summary[1],summary[2],summary[3],summary[4]);
 }
 //caluculates mode(s)
-void mode(double array[], int size, const char *s){
+void   mode(double array[], int size, const char *s){
 	double mode[size/2];//the mode(s)
 	memset(mode, 0, sizeof(mode));
 	int i;
@@ -185,7 +185,7 @@ double skew(double array[], int arrayi, const char*s, bool shouldDisplay){
 	for (i=0;i<arrayi;i++){
 		tempvar[0] += pow(array[i]-tempvar[1],3);
 	}
-	tempvar[0] = sqrt(arrayi*(arrayi-1))/(arrayi-2)/(arrayi)*tempvar[0]/pow(tempvar[2],3);
+	tempvar[0] /= sqrt(arrayi*(arrayi-1))/(arrayi-2)/(arrayi)/pow(tempvar[2],3);
 	if (shouldDisplay){
 		printf("The skewness for the %s distribution is %lf\n",s,tempvar[0]);
 	}
@@ -200,13 +200,33 @@ double kurt(double array[], int arrayi, const char*s) {
 	for (i=0;i<arrayi;i++){
 		tempvar[0] += pow(array[i]-tempvar[1],4);
 	}
-	tempvar[0] = tempvar[0]/(arrayi*pow(tempvar[2],4))-3;
+	tempvar[0] /= (arrayi*pow(tempvar[2],4))-3;
 	
 	printf("The excess kurtosis for the %s distribution is %lf\n",s,tempvar[0]);
 	
 	return tempvar[0];
 }
+//calculates r
+double corr(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+    double tempvar[4] = {};
+    tempvar[0] = mean(temp,tempi,NULL,0);
+    tempvar[1] = mean(humi,humii,NULL,0);
+    tempvar[2] = stdd(temp,tempi,NULL,0,0);
+    tempvar[3] = stdd(humi,humii,NULL,0,0);
+    double r;
+    int i;
+    if (tempi == humii){
+        for (i=0;i<tempi) {
+            r
+        }
+        r /= 
 
+    }
+    else {
+        printf("Error: There must be the same number of humidity and temperature readings.\n")
+    }
+
+}
 
 void numbers(double temp[] , double humi[], int tempi, int humii){
 	double tempvar[4] = {}; //for interm calcs
@@ -215,7 +235,7 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 
 	int selector[3] = {}; //selector with depth up to 3 (prob only use 1)
 	char *depth1[] = {"Mean","Five-Number Summary","Mode","Standard Deviation","Skewness","Kurtosis","r","R^2","Least-Squares Regression Line","Quadratic Regression","Sinusoidal Regression"};
-	selector[0] = request(depth1,11);
+	selector[0] = requ(depth1,11);
 
 	int i, j; //arbitrary index
 	// double calcval[2][2]; //mean, stddev (avoid recalc)
