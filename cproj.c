@@ -18,7 +18,7 @@ double skew(double array[], int arrayi, const char*s, bool shouldDisplay);
 double kurt(double array[], int arrayi, const char*s);
 double corr(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
 double cors(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
-
+void   lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
 
 int main()
 {
@@ -244,6 +244,16 @@ double cors(double temp[], double humi[], int tempi, int humii, bool shouldDispl
     }
     return vartemp;
 }
+//calculates the least-squares regression line
+void   lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+    double tempvar[2];
+    tempvar[0] = corr(temp,humi,tempi,humii,0)*stdd(humi,humii,NULL,0,1)/stdd(temp,tempi,NULL,0,1);
+    tempvar[1] = mean(humi,humii,NULL,0) - tempvar[0]*mean(temp,tempi,NULL,0);
+    if (shouldDisplay){
+        corr(temp,humi,tempi,humii,1);cors(temp,humi,tempi,humii,1);
+        printf("The least-squares regression line for the effect of temperature on humidity is y = %lf*x + %lf.\n",tempvar[0],tempvar[1]);
+    }
+}
 
 void numbers(double temp[] , double humi[], int tempi, int humii){
 	double tempvar[4] = {}; //for interm calcs
@@ -251,8 +261,8 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 	qsort(humi,humii,sizeof(double),cmpfunc);
 
 	int selector[3] = {}; //selector with depth up to 3 (prob only use 1)
-	char *depth1[] = {"Mean","Five-Number Summary","Mode","Standard Deviation","Skewness","Kurtosis","r","R^2","Least-Squares Regression Line","Quadratic Regression","Sinusoidal Regression"};
-	selector[0] = requ(depth1,11);
+	char *depth1[] = {"Mean","Five-Number Summary","Mode","Standard Deviation","Skewness","Kurtosis",/*"r","R^2",*/"Least-Squares Regression Line","Quadratic Regression","Sinusoidal Regression"};
+	selector[0] = requ(depth1,9);//11);
 
 	int i, j; //arbitrary index
 	// double calcval[2][2]; //mean, stddev (avoid recalc)
@@ -263,46 +273,43 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 	case 1:{
 		mean(temp,tempi,"temperature",1);
 		mean(humi,humii,"humidity"   ,1);
-	}
 		break;
+	}
 	//FIVE-NUMBER SUMMARY
 	case 2: {
 		fivenum(temp,tempi,"temperature");
 		fivenum(humi,humii,"humidity");
-	}
 		break;
+	}
 	//MODE
 	case 3: {
 		mode(temp,tempi,"temperature");
 		mode(humi,humii,"humidity");
-	}
 		break;
+	}
 	//STD. DEV.
 	case 4: {
 		stdd(temp,tempi,"temperature",1,1);
 		stdd(humi,humii,"humidity"   ,1,1);
-	}
 		break;
+	}
 	//SKEWNESS
 	case 5: {
 		skew(temp,tempi,"temperature",1);
 		skew(humi,humii,"humidity"   ,1);
-	}
 		break;
+	}
 	//KURTOSIS
 	case 6: {
 		kurt(temp,tempi,"temperature");
 		kurt(humi,humii,"humidity"   );
-	}
 		break;
-	case 7: {
-        corr(temp,humi,tempi,humii,1);
 	}
+    //LSRL
+    case 7: {
+        lsrl(temp,humi,tempi,humii,1);
         break;
-    case 8: {
-        cors(temp,humi,tempi,humii,1);
     }
-        break;
 
 	// default:
 	// 	break;
