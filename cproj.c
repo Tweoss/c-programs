@@ -16,6 +16,8 @@ void numbers(double temp[], double humid[], int tempi, int humi);
 double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust);
 double skew(double array[], int arrayi, const char*s, bool shouldDisplay);
 double kurt(double array[], int arrayi, const char*s);
+double corr(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
+double cors(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
 
 
 int main()
@@ -24,8 +26,8 @@ int main()
 	double humidity;
 	dht11_dat(&temperature, &humidity);
 
-	double temp[20] = {0, 3, 4, 1, 2, 3, 0, 2, 1, 3, 2, 0, 2, 2, 3, 2, 5, 2, 3, 999};
-	double humi[5]  = {0,1,2,5,6};
+	double temp[7] = {1,2,2,3,3,8,13};
+	double humi[7] = {1,2,3,4,5,6,7};
 
 	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
 	return 0;
@@ -211,21 +213,36 @@ double corr(double temp[], double humi[], int tempi, int humii, bool shouldDispl
     double tempvar[4] = {};
     tempvar[0] = mean(temp,tempi,NULL,0);
     tempvar[1] = mean(humi,humii,NULL,0);
-    tempvar[2] = stdd(temp,tempi,NULL,0,0);
-    tempvar[3] = stdd(humi,humii,NULL,0,0);
-    double r;
+    tempvar[2] = stdd(temp,tempi,NULL,0,1);
+    tempvar[3] = stdd(humi,humii,NULL,0,1);
+    // printf("%lf, %lf, %lf, %lf\n",tempvar[0],tempvar[1],tempvar[2],tempvar[3]);
+    double r = 0;
     int i;
     if (tempi == humii){
-        for (i=0;i<tempi) {
-            r
+        for (i=0;i<tempi;i++) {
+            r += (temp[i]-tempvar[0])/tempvar[2]*(humi[i]-tempvar[1])/tempvar[3];
+            // printf("%lf, ",r);
         }
-        r /= 
-
+        r /= tempi-1;
+        if (shouldDisplay){
+            printf("The correlation between temperature and humidity is %lf\n",r);
+        }
+        return r;
     }
     else {
-        printf("Error: There must be the same number of humidity and temperature readings.\n")
+        printf("Error: There must be the same number of humidity and temperature readings.\n");
+        return 0;
     }
 
+}
+//calculates r^2
+double cors(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+    double vartemp;
+    vartemp = pow(corr(temp,humi,tempi,humii,0),2);
+    if (shouldDisplay){
+        printf("The r^2, the percentage of variation in humidity explained by the variation in temperature or vice versa, is %lf.\n",vartemp);
+    }
+    return vartemp;
 }
 
 void numbers(double temp[] , double humi[], int tempi, int humii){
@@ -279,16 +296,19 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 	}
 		break;
 	case 7: {
-
+        corr(temp,humi,tempi,humii,1);
 	}
+    case 8: {
+        cors(temp,humi,tempi,humii,1);
+    }
 
 	// default:
 	// 	break;
 	}
 	/*RERUN????*/
-	// char *cont[] = {"Stop","Continue"};
-	// if (request(cont,2)-1){
-	// 	numbers(temp,humi,tempi,humii);
-	// }
+	char *cont[] = {"Stop","Continue"};
+	if (requ(cont,2)-1){
+		numbers(temp,humi,tempi,humii);
+	}
 
 }
