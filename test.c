@@ -4,14 +4,17 @@
 #include <math.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdbool.h>
 
 void dht11_dat(double *temp, double *humid);
 int digitornot(const char *s);
 int request(char *strings[], int stringi);
 int cmpfunc(const void * a, const void * b);
-double mean(double array[], int arrayi, const char *s);
+double mean(double array[], int arrayi, const char *s, bool shouldDisplay);
 void fivennum(double array[], int size, const char *s);
 void numbers(double temp[], double humid[], int tempi, int humi);
+double stdd(double array[], int arrayi, const char*s, bool shouldDisplay);
+
 
 int main()
 {
@@ -25,7 +28,7 @@ int main()
 	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
 	return 0;
 }
-
+//generates random data
 void dht11_dat(double *temp, double *humid)
 {
 	// simulated measurements from a DHT11 sensor
@@ -42,7 +45,7 @@ void dht11_dat(double *temp, double *humid)
 	*temp = 60 - 20*cos(3.14*t/12) + 2*noise;
 	*humid = 70 + 20*cos(3.14*t/12) + 5*noise;
 }
-
+//checks if input string is integer
 int digitornot(const char *s)
 {
 	while (*s) {
@@ -50,7 +53,7 @@ int digitornot(const char *s)
 	}
 	return 1;
 }
-
+//displays options, returns the selected
 int request(char *strings[], int stringi){
 	int i;
 	char input[10] = {};
@@ -71,22 +74,24 @@ int request(char *strings[], int stringi){
 	}
 	return atoi(input);
 }
-
+//for qsorting
 int cmpfunc (const void * a, const void * b) {
    return ( *(double*)a - *(double*)b );
 }
-
-double mean(double array[], int arrayi, const char *s){
+//calculates mean
+double mean(double array[], int arrayi, const char *s, bool shouldDisplay){
 	double tempvar = 0;
 	int i;
 	for (i=0;i<arrayi;i++){
 		tempvar += array[i];
 	}
 	tempvar = tempvar/arrayi;
-	printf("The mean %s is %lf.\n",s,tempvar);
+	if (shouldDisplay){
+		printf("The mean %s is %lf.\n",s,tempvar);
+	}
 	return tempvar;
 }
-
+//calculates five-number summary
 void fivenum(double array[], int size, const char *s){
 	double tempvar[2];
 	double summary[5];
@@ -108,7 +113,7 @@ void fivenum(double array[], int size, const char *s){
 	summary[4] = array[size-1];
 	printf("The five-number summary for %s is {%lf,%lf,%lf,%lf,%lf}.\n",s,summary[0],summary[1],summary[2],summary[3],summary[4]);
 }
-
+//caluculates mode(s)
 void mode(double array[], int size, const char *s){
 	double mode[size/2];//the mode(s)
 	memset(mode, 0, sizeof(mode));
@@ -155,6 +160,22 @@ void mode(double array[], int size, const char *s){
 	printf("} with multiplicity %d.\n",(int)tempvar[0]);
 	}
 }
+//calculates standard deviation
+double stdd(double array[], int arrayi, const char*s, bool shouldDisplay){
+	double tempvar = 0;
+	int i;
+	mean(array,arrayi,s,0);
+	for (i=0;i<arrayi;i++){
+		tempvar += pow(array[i]-mean(array,arrayi,NULL,0),2);
+	}
+	tempvar = sqrt(tempvar/(arrayi-1));
+	if (shouldDisplay){
+		printf("The sample standard deviation of %s is %lf.\n",s,tempvar);
+	}
+	return tempvar;
+}
+//calculates skewness
+
 
 void numbers(double temp[] , double humi[], int tempi, int humii){
 	double tempvar[4] = {}; //for interm calcs
@@ -166,40 +187,47 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 	selector[0] = request(depth1,11);
 
 	int i, j; //arbitrary index
-
+	// double calcval[2][2]; //mean, stddev (avoid recalc)
 
 	switch (selector[0])
 	{
 	//MEAN
 	case 1:{
-		mean(temp,tempi,"temperature");
-		mean(humi,humii,"humidity");
-		}
+		mean(temp,tempi,"temperature",1);
+		mean(humi,humii,"humidity"   ,1);
+	}
 		break;
 	//FIVE-NUMBER SUMMARY
 	case 2: {
 		fivenum(temp,tempi,"temperature");
 		fivenum(humi,humii,"humidity");
-		}
+	}
 		break;
 	//MODE
 	case 3: {
 		mode(temp,tempi,"temperature");
 		mode(humi,humii,"humidity");
-		}
+	}
 		break;
+	//STD. DEV.
 	case 4: {
+		stdd(temp,tempi,"temperature",1);
+		stdd(humi,humii,"humidity"   ,1);
+	}
+		break;
+	//SKEWNESS
+	case 5: {
 
-		}
+	}
 		break;
 
 	// default:
 	// 	break;
 	}
-	
-	char *cont[] = {"Stop","Continue"};
-	if (request(cont,2)-1){
-		numbers(temp,humi,tempi,humii);
-	}
+	/*RERUN????*/
+	// char *cont[] = {"Stop","Continue"};
+	// if (request(cont,2)-1){
+	// 	numbers(temp,humi,tempi,humii);
+	// }
 
 }
