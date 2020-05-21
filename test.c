@@ -13,7 +13,7 @@ int cmpfunc(const void * a, const void * b);
 double mean(double array[], int arrayi, const char *s, bool shouldDisplay);
 void fivennum(double array[], int size, const char *s);
 void numbers(double temp[], double humid[], int tempi, int humi);
-double stdd(double array[], int arrayi, const char*s, bool shouldDisplay);
+double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust);
 
 
 int main()
@@ -22,7 +22,9 @@ int main()
 	double humidity;
 	dht11_dat(&temperature, &humidity);
 
-	double temp[22] = {1,1,1,2,2,2,2,3,3,3,3,4,5,6,7,8,8,8,8,9,9,9};
+	
+
+	double temp[20] = {0, 3, 4, 1, 2, 3, 0, 2, 1, 3, 2, 0, 2, 2, 3, 2, 5, 2, 3, 999};
 	double humi[5]  = {0,1,2,5,6};
 
 	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
@@ -161,20 +163,49 @@ void mode(double array[], int size, const char *s){
 	}
 }
 //calculates standard deviation
-double stdd(double array[], int arrayi, const char*s, bool shouldDisplay){
-	double tempvar = 0;
+double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust){
+	double tempvar[2] = {};
+	tempvar[1] = mean(array,arrayi,NULL,0);
 	int i;
-	mean(array,arrayi,s,0);
 	for (i=0;i<arrayi;i++){
-		tempvar += pow(array[i]-mean(array,arrayi,NULL,0),2);
+		tempvar[0] += pow(array[i]-tempvar[1],2);
 	}
-	tempvar = sqrt(tempvar/(arrayi-1));
+	tempvar[0] = sqrt(tempvar[0]/(arrayi-adjust));
 	if (shouldDisplay){
-		printf("The sample standard deviation of %s is %lf.\n",s,tempvar);
+		printf("The sample standard deviation of %s is %lf.\n",s,tempvar[0]);
 	}
-	return tempvar;
+	return tempvar[0];
 }
-//calculates skewness
+//calculates skewness (adjusted Fisher-Pearson standardized moment coefficient)
+double skew(double array[], int arrayi, const char*s, bool shouldDisplay){
+	double tempvar[3] = {};
+	tempvar[1] = mean(array,arrayi,NULL,0);
+	tempvar[2] = stdd(array,arrayi,NULL,0,0);
+	int i;
+	for (i=0;i<arrayi;i++){
+		tempvar[0] += pow(array[i]-tempvar[1],3);
+	}
+	tempvar[0] = sqrt(arrayi*(arrayi-1))/(arrayi-2)/(arrayi)*tempvar[0]/pow(tempvar[2],3);
+	if (shouldDisplay){
+		printf("The skewness for the %s distribution is %lf\n",s,tempvar[0]);
+	}
+	return tempvar[0];
+}
+//calculates excess kurtosis (kurtosis-3)
+double kurt(double array[], int arrayi, const char*s) {
+	double tempvar[3] = {};
+	tempvar[1] = mean(array,arrayi,NULL,0);
+	tempvar[2] = stdd(array,arrayi,NULL,0,0);
+	int i;
+	for (i=0;i<arrayi;i++){
+		tempvar[0] += pow(array[i]-tempvar[1],4);
+	}
+	tempvar[0] = tempvar[0]/(arrayi*pow(tempvar[2],4))-3;
+	
+	printf("The excess kurtosis for the %s distribution is %lf\n",s,tempvar[0]);
+	
+	return tempvar[0];
+}
 
 
 void numbers(double temp[] , double humi[], int tempi, int humii){
@@ -211,15 +242,25 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 		break;
 	//STD. DEV.
 	case 4: {
-		stdd(temp,tempi,"temperature",1);
-		stdd(humi,humii,"humidity"   ,1);
+		stdd(temp,tempi,"temperature",1,1);
+		stdd(humi,humii,"humidity"   ,1,1);
 	}
 		break;
 	//SKEWNESS
 	case 5: {
-
+		skew(temp,tempi,"temperature",1);
+		skew(humi,humii,"humidity"   ,1);
 	}
 		break;
+	//KURTOSIS
+	case 6: {
+		kurt(temp,tempi,"temperature");
+		kurt(humi,humii,"humidity"   );
+	}
+		break;
+	case 7: {
+
+	}
 
 	// default:
 	// 	break;
