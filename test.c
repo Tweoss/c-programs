@@ -15,7 +15,7 @@ void fivennum(double array[], int size, const char *s);
 void numbers(double temp[], double humid[], int tempi, int humi);
 double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust);
 
-
+//useless change
 int main()
 {
 	double temperature;
