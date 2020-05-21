@@ -26,8 +26,8 @@ int main()
 	double humidity;
 	dht11_dat(&temperature, &humidity);
 
-	double temp[7] = {1,2,2,3,3,8,13};
-	double humi[7] = {1,2,3,4,5,6,7};
+	double temp[6] = {3, 8, 10, 17, 24, 27};
+	double humi[6] = {2, 8, 10, 13, 18, 20};
 
 	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
 	return 0;
@@ -67,7 +67,7 @@ int    requ(char *strings[], int stringi){
 	fgets(input,10,stdin);
 	strtok(input, "\n");
 
-	while (!(digitornot(input)) || (atoi(input) > stringi) || (atoi(input) < 1)){
+	while (!(digitornot(input)) || (atoi(input) > stringi) || (atoi(input) < 0)){
 		for (i = 0; i < stringi; i++){
 			printf("%d. %s\n", i+1, strings[i]);
 		}
@@ -225,7 +225,7 @@ double corr(double temp[], double humi[], int tempi, int humii, bool shouldDispl
         }
         r /= tempi-1;
         if (shouldDisplay){
-            printf("The correlation between temperature and humidity is %lf\n",r);
+            printf("The correlation between temperature and humidity is %lf.\n",r);
         }
         return r;
     }
@@ -298,17 +298,14 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 	case 7: {
         corr(temp,humi,tempi,humii,1);
 	}
+        break;
     case 8: {
         cors(temp,humi,tempi,humii,1);
     }
+        break;
 
 	// default:
 	// 	break;
-	}
-	/*RERUN????*/
-	char *cont[] = {"Stop","Continue"};
-	if (requ(cont,2)-1){
-		numbers(temp,humi,tempi,humii);
 	}
 
 }
