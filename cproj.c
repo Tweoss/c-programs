@@ -28,7 +28,6 @@ int main()
 
 	double temp[6] = {3, 8, 10, 17, 24, 27};
 	double humi[6] = {2, 8, 10, 13, 18, 20};
-
 	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
 	return 0;
 }
@@ -81,6 +80,31 @@ int    requ(char *strings[], int stringi){
 //for qsorting
 int    cmpfunc (const void * a, const void * b) {
    return ( *(double*)a - *(double*)b );
+}
+//data loading 
+void  *dataload(const char *s,int numofdoubles){
+    double buffer[numofdoubles*8];
+    FILE *ptr = fopen(s,"rb");
+    int bytecount; //the total number of bytes in the file
+    int byte; //the current byte
+    int i; //arbitrary index
+    do {
+      byte = fgetc(ptr);
+      if( feof(ptr) ) {
+         break ;
+      }
+      bytecount++;
+   } while(1);
+   if (!(bytecount > sizeof(buffer)/sizeof(double))){
+       ptr = fopen(s,"rb");
+       for (i=0; i<numofdoubles*sizeof(double);i++){
+           buffer[i] = fgetc(ptr);
+       }
+   }
+   else {
+       printf("Error: Not enough buffer size.\n");
+   }
+   return ptr;
 }
 //calculates mean
 double mean(double array[], int arrayi, const char *s, bool shouldDisplay){
@@ -254,6 +278,10 @@ void   lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDispl
         printf("The least-squares regression line for the effect of temperature on humidity is y = %lf*x + %lf.\n",tempvar[0],tempvar[1]);
     }
 }
+//calculates the least-squares regression quadratic
+void   lsrq(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+
+}
 
 void numbers(double temp[] , double humi[], int tempi, int humii){
 	double tempvar[4] = {}; //for interm calcs
@@ -261,11 +289,10 @@ void numbers(double temp[] , double humi[], int tempi, int humii){
 	qsort(humi,humii,sizeof(double),cmpfunc);
 
 	int selector[3] = {}; //selector with depth up to 3 (prob only use 1)
-	char *depth1[] = {"Mean","Five-Number Summary","Mode","Standard Deviation","Skewness","Kurtosis",/*"r","R^2",*/"Least-Squares Regression Line","Quadratic Regression","Sinusoidal Regression"};
-	selector[0] = requ(depth1,9);//11);
+	char *depth1[] = {"Mean","Five-Number Summary","Mode","Standard Deviation","Skewness","Kurtosis","Least-Squares Regression Line","Quadratic Regression","Sinusoidal Regression"};
+	selector[0] = requ(depth1,9);
 
 	int i, j; //arbitrary index
-	// double calcval[2][2]; //mean, stddev (avoid recalc)
 
 	switch (selector[0])
 	{
