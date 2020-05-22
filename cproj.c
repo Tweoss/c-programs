@@ -19,6 +19,9 @@ double kurt(double array[], int arrayi, const char*s);
 double corr(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
 double cors(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
 void   lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDisplay);
+void	*matmul(int arow, int acol, int brow, int bcol, double a[arow][acol], double b[brow][bcol]);
+void	*mattra(int arow, int acol, double a[arow][acol]);
+
 
 int main()
 {
@@ -28,11 +31,36 @@ int main()
 
 	double temp[6] = {3, 8, 10, 17, 24, 27};
 	double humi[6] = {2, 8, 10, 13, 18, 20};
-	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
+
+	double mata[4][3] = {{1,0,0},{0,2,3},{5,7,9},{5,5,5}};
+	double matb[3][3] = {{1,0,0},{0,1,0},{0,2,-1}};
+
+
+	// for (size_t i = 0; i < n; ++i)
+	// 	for (size_t j = 0; j < n; ++j)
+	// 		A[i][j] = someinvolvedfunction(i, j);
+
+	// double (*c)[3] = matmul(3,3,3,3,mata,matb);
+	
+	//second number is num of columns
+	double (*c)[4] = mattra(4,3,mata);
+
+	int i,j; //arbitrary index
+	printf("HEY:\n");
+	for (i=0;i<4;i++){
+		for (j=0;j<3;j++){
+			printf("%lf, ",c[j][i]);
+		}
+		// printf("\n");
+	}
+	// printf("\n");
+	free(c);
+
+	// numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
 	return 0;
 }
 //generates random data
-void dht11_dat(double *temp, double *humid)
+void	 dht11_dat(double *temp, double *humid)
 {
 	// simulated measurements from a DHT11 sensor
 	time_t rawtime;
@@ -49,7 +77,7 @@ void dht11_dat(double *temp, double *humid)
 	*humid = 70 + 20*cos(3.14*t/12) + 5*noise;
 }
 //checks if input string is integer
-int digitornot(const char *s)
+int		 digitornot(const char *s)
 {
 	while (*s) {
 		if (isdigit(*s++) == 0) return 0;
@@ -57,7 +85,7 @@ int digitornot(const char *s)
 	return 1;
 }
 //displays options, returns the selected
-int    requ(char *strings[], int stringi){
+int		 requ(char *strings[], int stringi){
 	int i;
 	char input[10] = {};
 	for (i = 0; i < stringi; i++){
@@ -78,11 +106,11 @@ int    requ(char *strings[], int stringi){
 	return atoi(input);
 }
 //for qsorting
-int    cmpfunc (const void * a, const void * b) {
+int		 cmpfunc (const void * a, const void * b) {
    return ( *(double*)a - *(double*)b );
 }
 //data loading 
-void  *dataload(const char *s,int numofdoubles){
+void    *dataload(const char *s,int numofdoubles){
     double buffer[numofdoubles*8];
     FILE *ptr = fopen(s,"rb");
     int bytecount; //the total number of bytes in the file
@@ -106,8 +134,41 @@ void  *dataload(const char *s,int numofdoubles){
    }
    return ptr;
 }
+//matrix multiplication A*B
+void	*matmul(int arow, int acol, int brow, int bcol, double a[arow][acol], double b[brow][bcol]){
+	int i, j, k, l;//arbitrary index
+	double (*c)[arow] = malloc(sizeof(double[arow][bcol]));
+	if (acol == brow){
+		for (i=0;i<arow;i++){ // These two lines loop through the
+		for (j=0;j<brow;j++){ // elements of the result matrix
+			double tempvar = 0;
+			for (k=0;k<acol;k++){ // These two lines multiply to obtain
+				tempvar += a[i][k]*b[k][j];
+			}	
+			c[i][j] = tempvar;
+		}
+		}
+		return c;
+	}
+	else {
+		printf("Error: Dimensions do not match.\n");
+		return NULL;
+	}
+}
+//matrix transpose A^(T)
+void	*mattra(int arow, int acol, double a[arow][acol]){
+	int i, j;//arbitrary index
+	double (*c)[arow] = malloc(sizeof(double[acol][arow]));
+	for (i=0;i<arow;i++){ // These two lines loop through the
+		for (j=0;j<acol;j++){ // elements of the input matrix
+			c[j][i] = a[i][j];
+			printf("%lf,%d,%d\n ",c[j][i],j,i);
+		}
+	}
+	return c;
+}
 //calculates mean
-double mean(double array[], int arrayi, const char *s, bool shouldDisplay){
+double	 mean(double array[], int arrayi, const char *s, bool shouldDisplay){
 	double tempvar = 0;
 	int i;
 	for (i=0;i<arrayi;i++){
@@ -120,7 +181,7 @@ double mean(double array[], int arrayi, const char *s, bool shouldDisplay){
 	return tempvar;
 }
 //calculates five-number summary
-void   fivenum(double array[], int size, const char *s){
+void	 fivenum(double array[], int size, const char *s){
 	double tempvar[2];
 	double summary[5];
 	//Median
@@ -142,7 +203,7 @@ void   fivenum(double array[], int size, const char *s){
 	printf("The five-number summary for %s is {%lf,%lf,%lf,%lf,%lf}.\n",s,summary[0],summary[1],summary[2],summary[3],summary[4]);
 }
 //caluculates mode(s)
-void   mode(double array[], int size, const char *s){
+void	 mode(double array[], int size, const char *s){
 	double mode[size/2];//the mode(s)
 	memset(mode, 0, sizeof(mode));
 	int i;
@@ -189,7 +250,7 @@ void   mode(double array[], int size, const char *s){
 	}
 }
 //calculates standard deviation
-double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust){
+double	 stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int adjust){
 	double tempvar[2] = {};
 	tempvar[1] = mean(array,arrayi,NULL,0);
 	int i;
@@ -203,7 +264,7 @@ double stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int ad
 	return tempvar[0];
 }
 //calculates skewness (adjusted Fisher-Pearson standardized moment coefficient)
-double skew(double array[], int arrayi, const char*s, bool shouldDisplay){
+double	 skew(double array[], int arrayi, const char*s, bool shouldDisplay){
 	double tempvar[3] = {};
 	tempvar[1] = mean(array,arrayi,NULL,0);
 	tempvar[2] = stdd(array,arrayi,NULL,0,0);
@@ -218,7 +279,7 @@ double skew(double array[], int arrayi, const char*s, bool shouldDisplay){
 	return tempvar[0];
 }
 //calculates excess kurtosis (kurtosis-3)
-double kurt(double array[], int arrayi, const char*s) {
+double	 kurt(double array[], int arrayi, const char*s) {
 	double tempvar[3] = {};
 	tempvar[1] = mean(array,arrayi,NULL,0);
 	tempvar[2] = stdd(array,arrayi,NULL,0,0);
@@ -233,7 +294,7 @@ double kurt(double array[], int arrayi, const char*s) {
 	return tempvar[0];
 }
 //calculates r
-double corr(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+double	 corr(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
     double tempvar[4] = {};
     tempvar[0] = mean(temp,tempi,NULL,0);
     tempvar[1] = mean(humi,humii,NULL,0);
@@ -260,7 +321,7 @@ double corr(double temp[], double humi[], int tempi, int humii, bool shouldDispl
 
 }
 //calculates r^2
-double cors(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+double	 cors(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
     double vartemp;
     vartemp = pow(corr(temp,humi,tempi,humii,0),2);
     if (shouldDisplay){
@@ -269,7 +330,7 @@ double cors(double temp[], double humi[], int tempi, int humii, bool shouldDispl
     return vartemp;
 }
 //calculates the least-squares regression line
-void   lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+void	 lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
     double tempvar[2];
     tempvar[0] = corr(temp,humi,tempi,humii,0)*stdd(humi,humii,NULL,0,1)/stdd(temp,tempi,NULL,0,1);
     tempvar[1] = mean(humi,humii,NULL,0) - tempvar[0]*mean(temp,tempi,NULL,0);
@@ -279,7 +340,7 @@ void   lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDispl
     }
 }
 //calculates the least-squares regression quadratic
-void   lsrq(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
+void	 lsrq(double temp[], double humi[], int tempi, int humii, bool shouldDisplay){
 
 }
 
