@@ -30,33 +30,34 @@ int main()
 	dht11_dat(&temperature, &humidity);
 
 	double temp[6] = {3, 8, 10, 17, 24, 27};
-	double humi[6] = {2, 8, 10, 13, 18, 20};
+	double humi[7] = {2, 2, 8, 10, 13, 18, 20};
 
 	double mata[4][3] = {{1,0,0},{0,2,3},{5,7,9},{5,5,5}};
 	double matb[3][3] = {{1,0,0},{0,1,0},{0,2,-1}};
-
+	//identity matrix (4x4)
+	double iden[4][4] = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 
 	// for (size_t i = 0; i < n; ++i)
 	// 	for (size_t j = 0; j < n; ++j)
 	// 		A[i][j] = someinvolvedfunction(i, j);
 
 	// double (*c)[3] = matmul(3,3,3,3,mata,matb);
-	
+
 	//second number is num of columns
 	double (*c)[4] = mattra(4,3,mata);
-
+/*
 	int i,j; //arbitrary index
-	printf("HEY:\n");
+	// printf("HEY:\n");
 	for (i=0;i<4;i++){
 		for (j=0;j<3;j++){
-			printf("%lf, ",c[j][i]);
+			printf("%f, ",c[j][i]);
 		}
 		// printf("\n");
 	}
 	// printf("\n");
 	free(c);
-
-	// numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
+*/
+	numbers(temp,humi,sizeof(temp)/sizeof(double), sizeof(humi)/sizeof(double)); //sizeof(temp),sizeof(humi));
 	return 0;
 }
 //generates random data
@@ -162,11 +163,54 @@ void	*mattra(int arow, int acol, double a[arow][acol]){
 	for (i=0;i<arow;i++){ // These two lines loop through the
 		for (j=0;j<acol;j++){ // elements of the input matrix
 			c[j][i] = a[i][j];
-			printf("%lf,%d,%d\n ",c[j][i],j,i);
+			printf("%f,%d,%d\n ",c[j][i],j,i);
 		}
 	}
 	return c;
 }
+// //matrix determinant finding (specifically 4x4)
+// double	 matdet(int arow, int acol, double a[arow][acol]){
+// 	return a[0][0]*(0				 +
+// 			(a[1][1]*a[2][2]*a[3][3])+
+// 			(a[1][2]*a[2][3]*a[3][0])+
+// 			(a[1][3]*a[2][1]*a[3][2])-
+// 			(a[1][1]*a[2][3]*a[3][2])-
+// 			(a[1][2]*a[2][1]*a[3][3])-
+// 			(a[1][3]*a[2][2]*a[3][1])-
+// 		)
+// 		-a[0][1]*(0				 +
+// 			(a[0][1]*a[2][2]*a[3][3])+
+// 			(a[0][2]*a[2][3]*a[3][0])+
+// 			(a[0][3]*a[2][1]*a[3][2])-
+// 			(a[0][1]*a[2][3]*a[3][2])-
+// 			(a[0][2]*a[2][1]*a[3][3])-
+// 			(a[0][3]*a[2][2]*a[3][1])-
+// 		)
+// 		+a[0][2]*(0				 +
+// 			(a[1][1]*a[0][2]*a[3][3])+
+// 			(a[1][2]*a[0][3]*a[3][0])+
+// 			(a[1][3]*a[0][1]*a[3][2])-
+// 			(a[1][1]*a[0][3]*a[3][2])-
+// 			(a[1][2]*a[0][1]*a[3][3])-
+// 			(a[1][3]*a[0][2]*a[3][1])-
+// 		)
+// 		-a[0][3]*(0				 +
+// 			(a[1][1]*a[2][2]*a[0][3])+
+// 			(a[1][2]*a[2][3]*a[0][0])+
+// 			(a[1][3]*a[2][1]*a[0][2])-
+// 			(a[1][1]*a[2][3]*a[0][2])-
+// 			(a[1][2]*a[2][1]*a[0][3])-
+// 			(a[1][3]*a[2][2]*a[0][1])-
+// 		);
+// }
+//trace calculator (4x4)
+// double	 matrac(int arow, int acol, double a[arow][acol]){
+// 	double tempvar = 1;
+// 	int i;
+// 	for 
+// }
+//matrix inverse finding (4x4)
+
 //calculates mean
 double	 mean(double array[], int arrayi, const char *s, bool shouldDisplay){
 	double tempvar = 0;
@@ -176,7 +220,7 @@ double	 mean(double array[], int arrayi, const char *s, bool shouldDisplay){
 	}
 	tempvar = tempvar/arrayi;
 	if (shouldDisplay){
-		printf("The mean %s is %lf.\n",s,tempvar);
+		printf("The mean %s is %f.\n",s,tempvar);
 	}
 	return tempvar;
 }
@@ -200,7 +244,7 @@ void	 fivenum(double array[], int size, const char *s){
 	summary[0] = array[0];
 	//Max
 	summary[4] = array[size-1];
-	printf("The five-number summary for %s is {%lf,%lf,%lf,%lf,%lf}.\n",s,summary[0],summary[1],summary[2],summary[3],summary[4]);
+	printf("The five-number summary for %s is {%f,%f,%f,%f,%f}.\n",s,summary[0],summary[1],summary[2],summary[3],summary[4]);
 }
 //caluculates mode(s)
 void	 mode(double array[], int size, const char *s){
@@ -242,9 +286,9 @@ void	 mode(double array[], int size, const char *s){
 	}
 	else {	
 	printf("The mode(s) for %s are {",s);
-	printf("%lf",mode[0]);
+	printf("%f",mode[0]);
 	for (i=1;i<modii;i++){
-		printf(",%lf",mode[i]);
+		printf(",%f",mode[i]);
 	}
 	printf("} with multiplicity %d.\n",(int)tempvar[0]);
 	}
@@ -259,7 +303,7 @@ double	 stdd(double array[], int arrayi, const char*s, bool shouldDisplay, int a
 	}
 	tempvar[0] = sqrt(tempvar[0]/(arrayi-adjust));
 	if (shouldDisplay){
-		printf("The sample standard deviation of %s is %lf.\n",s,tempvar[0]);
+		printf("The sample standard deviation of %s is %f.\n",s,tempvar[0]);
 	}
 	return tempvar[0];
 }
@@ -274,7 +318,7 @@ double	 skew(double array[], int arrayi, const char*s, bool shouldDisplay){
 	}
 	tempvar[0] /= sqrt(arrayi*(arrayi-1))/(arrayi-2)/(arrayi)/pow(tempvar[2],3);
 	if (shouldDisplay){
-		printf("The skewness for the %s distribution is %lf\n",s,tempvar[0]);
+		printf("The skewness for the %s distribution is %f\n",s,tempvar[0]);
 	}
 	return tempvar[0];
 }
@@ -289,7 +333,7 @@ double	 kurt(double array[], int arrayi, const char*s) {
 	}
 	tempvar[0] /= (arrayi*pow(tempvar[2],4))-3;
 	
-	printf("The excess kurtosis for the %s distribution is %lf\n",s,tempvar[0]);
+	printf("The excess kurtosis for the %s distribution is %f\n",s,tempvar[0]);
 	
 	return tempvar[0];
 }
@@ -300,17 +344,17 @@ double	 corr(double temp[], double humi[], int tempi, int humii, bool shouldDisp
     tempvar[1] = mean(humi,humii,NULL,0);
     tempvar[2] = stdd(temp,tempi,NULL,0,1);
     tempvar[3] = stdd(humi,humii,NULL,0,1);
-    // printf("%lf, %lf, %lf, %lf\n",tempvar[0],tempvar[1],tempvar[2],tempvar[3]);
+    // printf("%f, %f, %f, %f\n",tempvar[0],tempvar[1],tempvar[2],tempvar[3]);
     double r = 0;
     int i;
     if (tempi == humii){
         for (i=0;i<tempi;i++) {
             r += (temp[i]-tempvar[0])/tempvar[2]*(humi[i]-tempvar[1])/tempvar[3];
-            // printf("%lf, ",r);
+            // printf("%f, ",r);
         }
         r /= tempi-1;
         if (shouldDisplay){
-            printf("The correlation between temperature and humidity is %lf.\n",r);
+            printf("The correlation between temperature and humidity is %f.\n",r);
         }
         return r;
     }
@@ -325,7 +369,7 @@ double	 cors(double temp[], double humi[], int tempi, int humii, bool shouldDisp
     double vartemp;
     vartemp = pow(corr(temp,humi,tempi,humii,0),2);
     if (shouldDisplay){
-        printf("The r^2, the percentage of variation in humidity explained by the variation in temperature or vice versa, is %lf.\n",vartemp);
+        printf("The r^2, the percentage of variation in humidity explained by the variation in temperature or vice versa, is %f.\n",vartemp);
     }
     return vartemp;
 }
@@ -336,7 +380,7 @@ void	 lsrl(double temp[], double humi[], int tempi, int humii, bool shouldDispla
     tempvar[1] = mean(humi,humii,NULL,0) - tempvar[0]*mean(temp,tempi,NULL,0);
     if (shouldDisplay){
         corr(temp,humi,tempi,humii,1);cors(temp,humi,tempi,humii,1);
-        printf("The least-squares regression line for the effect of temperature on humidity is y = %lf*x + %lf.\n",tempvar[0],tempvar[1]);
+        printf("The least-squares regression line for the effect of temperature on humidity is y = %f*x + %f.\n",tempvar[0],tempvar[1]);
     }
 }
 //calculates the least-squares regression quadratic

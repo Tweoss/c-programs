@@ -8,20 +8,20 @@ int main()
 double temperature;
 double humidity;
 dht11_dat(&temperature, &humidity);
-printf("%lf\n", temperature);
-printf("%lf\n", humidity);
+printf("%f\n", temperature);
+printf("%f\n", humidity);
 dht11_dat(&temperature, &humidity);
-printf("%lf\n", temperature);
-printf("%lf\n", humidity);
+printf("%f\n", temperature);
+printf("%f\n", humidity);
 dht11_dat(&temperature, &humidity);
-printf("%lf\n", temperature);
-printf("%lf\n", humidity);
+printf("%f\n", temperature);
+printf("%f\n", humidity);
 dht11_dat(&temperature, &humidity);
-printf("%lf\n", temperature);
-printf("%lf\n", humidity);
+printf("%f\n", temperature);
+printf("%f\n", humidity);
 dht11_dat(&temperature, &humidity);
-printf("%lf\n", temperature);
-printf("%lf\n", humidity);
+printf("%f\n", temperature);
+printf("%f\n", humidity);
 
 return 0;
 }

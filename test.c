@@ -168,7 +168,7 @@ int main(){
 // 	}
 // 	tempvar = tempvar/arrayi;
 // 	if (shouldDisplay){
-// 		printf("The mean %s is %lf.\n",s,tempvar);
+// 		printf("The mean %s is %f.\n",s,tempvar);
 // 	}
 // 	return tempvar;
 // }
@@ -192,7 +192,7 @@ int main(){
 // 	summary[0] = array[0];
 // 	//Max
 // 	summary[4] = array[size-1];
-// 	printf("The five-number summary for %s is {%lf,%lf,%lf,%lf,%lf}.\n",s,summary[0],summary[1],summary[2],summary[3],summary[4]);
+// 	printf("The five-number summary for %s is {%f,%f,%f,%f,%f}.\n",s,summary[0],summary[1],summary[2],summary[3],summary[4]);
 // }
 // //caluculates mode(s)
 // void mode(double array[], int size, const char *s){
@@ -234,9 +234,9 @@ int main(){
 // 	}
 // 	else {	
 // 	printf("The mode(s) for %s are {",s);
-// 	printf("%lf",mode[0]);
+// 	printf("%f",mode[0]);
 // 	for (i=1;i<modii;i++){
-// 		printf(",%lf",mode[i]);
+// 		printf(",%f",mode[i]);
 // 	}
 // 	printf("} with multiplicity %d.\n",(int)tempvar[0]);
 // 	}
@@ -251,7 +251,7 @@ int main(){
 // 	}
 // 	tempvar[0] = sqrt(tempvar[0]/(arrayi-adjust));
 // 	if (shouldDisplay){
-// 		printf("The sample standard deviation of %s is %lf.\n",s,tempvar[0]);
+// 		printf("The sample standard deviation of %s is %f.\n",s,tempvar[0]);
 // 	}
 // 	return tempvar[0];
 // }
@@ -266,7 +266,7 @@ int main(){
 // 	}
 // 	tempvar[0] = sqrt(arrayi*(arrayi-1))/(arrayi-2)/(arrayi)*tempvar[0]/pow(tempvar[2],3);
 // 	if (shouldDisplay){
-// 		printf("The skewness for the %s distribution is %lf\n",s,tempvar[0]);
+// 		printf("The skewness for the %s distribution is %f\n",s,tempvar[0]);
 // 	}
 // 	return tempvar[0];
 // }
@@ -281,7 +281,7 @@ int main(){
 // 	}
 // 	tempvar[0] = tempvar[0]/(arrayi*pow(tempvar[2],4))-3;
 	
-// 	printf("The excess kurtosis for the %s distribution is %lf\n",s,tempvar[0]);
+// 	printf("The excess kurtosis for the %s distribution is %f\n",s,tempvar[0]);
 	
 // 	return tempvar[0];
 // }
