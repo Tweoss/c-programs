@@ -136,26 +136,7 @@ void    *dataload(const char *s,int numofdoubles){
    return ptr;
 }
 //matrix multiplication A*B
-void	*matmul(int arow, int acol, int brow, int bcol, double a[arow][acol], double b[brow][bcol]){
-	int i, j, k, l;//arbitrary index
-	double (*c)[arow] = malloc(sizeof(double[arow][bcol]));
-	if (acol == brow){
-		for (i=0;i<arow;i++){ // These two lines loop through the
-		for (j=0;j<brow;j++){ // elements of the result matrix
-			double tempvar = 0;
-			for (k=0;k<acol;k++){ // These two lines multiply to obtain
-				tempvar += a[i][k]*b[k][j];
-			}	
-			c[i][j] = tempvar;
-		}
-		}
-		return c;
-	}
-	else {
-		printf("Error: Dimensions do not match.\n");
-		return NULL;
-	}
-}
+
 //matrix transpose A^(T)
 void	*mattra(int arow, int acol, double a[arow][acol]){
 	int i, j;//arbitrary index
