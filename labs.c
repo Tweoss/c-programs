@@ -1,13 +1,27 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
 
-int main(void)
+struct Point
 {
-    for (int i = 0; i < 9; i++)
-    {
-        for (int j = 0; j < 10; j++)
-        {
-            // minimizing # of printf statements. Use conditionals to determine whether character should be newline, space, or star
-            printf("%c", i + j < 4 || j - i > 4 || i + j > 12 || i - j > 4  ? j == 9 ? '\n' :' ' : '*');
-        }
-    }
+    double x;
+    double y;
+};
+
+double distance(struct Point a, struct Point b)
+{
+    return sqrt(pow(a.x - b.x, 2.) + pow(a.y - b.y, 2.));
+}
+
+int main(int argc, char *argv[])
+{
+    struct Point a, b;
+
+    a.x = atof(argv[1]);
+    a.y = atof(argv[2]);
+    b.x = atof(argv[3]);
+    b.y = atof(argv[4]);
+
+    printf("%f\n", distance(a, b));
 }
