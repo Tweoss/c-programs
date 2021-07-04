@@ -2,26 +2,53 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 
-struct Point
-{
-    double x;
-    double y;
-};
-
-double distance(struct Point a, struct Point b)
-{
-    return sqrt(pow(a.x - b.x, 2.) + pow(a.y - b.y, 2.));
-}
+#define CONTINUE 0
+#define LOSS 1
+#define WIN 2
 
 int main(int argc, char *argv[])
 {
-    struct Point a, b;
+    float count[5][6] = {0};
 
-    a.x = atof(argv[1]);
-    a.y = atof(argv[2]);
-    b.x = atof(argv[3]);
-    b.y = atof(argv[4]);
-
-    printf("%f\n", distance(a, b));
+    printf("Enter salesperson 0 to stop.\n");
+    uint32_t person = 0, product = 0;
+    float dollar_value = 0.;
+    while (true)
+    {
+        printf("Person #: ");
+        scanf("%d", &person);
+        if (person == 0 || person > 4)
+        {
+            break;
+        }
+        printf("Product #: ");
+        scanf("%d", &product);
+        if (product == 0 || product > 5)
+        {
+            break;
+        }
+        printf("Dollar Value: ");
+        scanf("%f", &dollar_value);
+        count[person - 1][product - 1] += dollar_value;
+    }
+    // sum rows, columns
+    for (size_t i = 0; i < 4; i++)
+    {
+        for (size_t j = 0; j < 5; j++)
+        {
+            count[4][j] += count[i][j];
+            count[i][5] += count[i][j];
+            count[4][5] += count[i][j];
+        }
+    }
+    for (size_t i = 0; i < 5; i++)
+    {
+        for (size_t j = 0; j < 6; j++)
+        {
+            printf("%f\t", count[i][j]);
+        }
+        printf("\n");
+    }
 }
