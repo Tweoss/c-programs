@@ -4,51 +4,34 @@
 #include <math.h>
 #include <time.h>
 
-#define CONTINUE 0
-#define LOSS 1
-#define WIN 2
+long int power2(int n, int k)
+{
+    return n << k;
+}
+
+char* intToBit(int n) {
+    char * result = malloc(32);
+    int i = 0;
+    while ((n & 0b10000000000000000000000000000000) == 0) {n <<=1; i++;}
+    int j = 0;
+    while (i < 32) {
+        result[j++] = n & 0b10000000000000000000000000000000 ? '1' : '0';
+        i++;
+        n <<= 1;
+    }
+    result[i] = '\0';
+    return result;
+}
 
 int main(int argc, char *argv[])
 {
-    float count[5][6] = {0};
-
-    printf("Enter salesperson 0 to stop.\n");
-    uint32_t person = 0, product = 0;
-    float dollar_value = 0.;
-    while (true)
+    if (argc == 1 || argc == 2)
     {
-        printf("Person #: ");
-        scanf("%d", &person);
-        if (person == 0 || person > 4)
-        {
-            break;
-        }
-        printf("Product #: ");
-        scanf("%d", &product);
-        if (product == 0 || product > 5)
-        {
-            break;
-        }
-        printf("Dollar Value: ");
-        scanf("%f", &dollar_value);
-        count[person - 1][product - 1] += dollar_value;
+        printf("Input integers to be shifted.\n");
+        exit(1);
     }
-    // sum rows, columns
-    for (size_t i = 0; i < 4; i++)
-    {
-        for (size_t j = 0; j < 5; j++)
-        {
-            count[4][j] += count[i][j];
-            count[i][5] += count[i][j];
-            count[4][5] += count[i][j];
-        }
-    }
-    for (size_t i = 0; i < 5; i++)
-    {
-        for (size_t j = 0; j < 6; j++)
-        {
-            printf("%f\t", count[i][j]);
-        }
-        printf("\n");
-    }
+    int input = atoi(argv[1]);
+    int power = atoi(argv[2]);
+    printf("Original: %d, %s\n", input, intToBit(input));
+    printf("Shifted: %ld, %s\n", power2(input, power),intToBit( power2(input, power)));
 }
