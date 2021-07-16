@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <math.h>
 #include <string.h>
-#include <time.h>
 
 // ------------ PREPROCESSOR DIRECTIVES ------------
 
+// The array size
 #define ARRAY_SIZE 100
-
 // Password is abcdefgacdebfg. Hashing means the password should not be inspectable from the executable.
 #define PASSWORD_HASH 1362678140;
+
+// -------------- STRUCTURES --------------
 
 // The structure student consists of a name (character array of size 20), midterm and final scores (integer).
 typedef struct
@@ -22,7 +22,8 @@ typedef struct
 
 // -------------- UTILITY FUNCTIONS --------------
 
-// simple hash algorithm (sdbm) to check password from http://www.cse.yorku.ca/~oz/hash.html
+// simple hash algorithm (sdbm) to check password while hiding pswd from executable (from http://www.cse.yorku.ca/~oz/hash.html)
+// Note: this is not a cryptographically secure hash at all.
 // shows bit mixing: subtraction and addition with shifting
 int hash(char *word)
 {
@@ -35,6 +36,7 @@ int hash(char *word)
     return hash;
 }
 
+// comparator function for qsort
 int compare_students_name(const void *a, const void *b)
 {
     // alphabetical ascending (a, b, c)
@@ -42,6 +44,7 @@ int compare_students_name(const void *a, const void *b)
     return strcmp(((Student *)a)->name, ((Student *)b)->name);
 }
 
+// comparator function for qsort
 int compare_students_midterm(const void *a, const void *b)
 {
     // numerical descending (3, 2, 1)
@@ -49,6 +52,7 @@ int compare_students_midterm(const void *a, const void *b)
     return - ((Student *)a)->midterm + ((Student *)b)->midterm;
 }
 
+// comparator function for qsort
 int compare_students_final(const void *a, const void *b)
 {
     // numerical descending (3, 2, 1)
@@ -128,7 +132,7 @@ bool remove_student(Student students[], int *currentSize)
     printf("Enter the name of the student to be removed (removes the first instance of this name): ");
     scanf("%s", name);
     bool found = false;
-    for (size_t i = 0; i < ARRAY_SIZE; i++)
+    for (size_t i = 0; i < *currentSize; i++)
     {
         // if the names are equivalent, remove the student
         if (strcmp(name, students[i].name) == 0)
@@ -151,7 +155,7 @@ bool enter_grades(Student students[], int currentSize)
     char name[20];
     scanf("%s", name);
     bool found = false;
-    for (size_t i = 0; i < ARRAY_SIZE; i++)
+    for (size_t i = 0; i < currentSize; i++)
     {
         // if the names are equivalent, enter grades
         if (strcmp(name, students[i].name) == 0)
@@ -251,33 +255,40 @@ int main(int argc, char *argv[])
             add_student(students + currentSize) ?  printf("Added.\n") && currentSize++ : printf("Failed.\n");
             break;
         case 2:
+            // pass pointer so that currentSize can be decremented if a student is successfully removed
             remove_student(students, &currentSize);
             currentSize--;
             printf("Removed.\n");
             break;
         case 3:
+            // pass currentSize so know how many to search in
             enter_grades(students, currentSize);
             printf("Updated grades.\n");
             break;
         case 4:
+            // currentSize to know how many to display
             display_students(students, currentSize);
             break;
         case 5:
+            // pass currentSize to qsort to avoid using deleted elements
             sort_students_name(students, currentSize);
             printf("Sorted.\n");
             display_students(students, currentSize);
             break;
         case 6:
+            // pass currentSize to qsort to avoid using deleted elements
             sort_students_midterm(students, currentSize);
             printf("Sorted.\n");
             display_students(students, currentSize);
             break;
         case 7:
+            // pass currentSize to qsort to avoid using deleted elements
             sort_students_final(students, currentSize);
             printf("Sorted.\n");
             display_students(students, currentSize);
             break;
         case 8:
+            // pass currentSize to avoid using deleted elements
             printf("The class mean for the final was: %f.\n", find_class_mean(students, currentSize));
             printf("The class median for the final was: %d.\n", find_class_median(students, currentSize));
             break;
