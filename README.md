@@ -1,3 +1,8 @@
+The program runs with verification of a password input. It displays a menu with the options to interact with the array of students. The array's length of valid inputs is kept in a variable in order to ensure that only valid values from the array are used and not outdated, deleted values. 
+
+Here is the source code with comments:
+
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -303,3 +308,13 @@ int main(int argc, char *argv[])
         }
     }
 }
+
+```
+
+First, there are the include headers and the preprocessor directives, as alternatives to const variables. Second, there is the struct definition for the Student type. 
+
+Then, there are the utility functions. Because the program does not use function prototyping, the functions must be defined before they are used. Thus, the utility functions come first. The first function is a hash function described at [this link](http://www.cse.yorku.ca/~oz/hash.html). It is a simple hash function meant to obscure the password from the compiled executable. The password is `abcdefgacdebfg`, and its hash is part of the preprocessor directives. Then the comparator functions are defined. These are used later to sort the array of students via the quick sort provided by stdlib. 
+
+After the utility functions are the user interaction functions, which have output and input from the user and provide their results, primarily whether or not they succeed, to main. Request_password requests a password and returns whether or not it matches with the hash. Menu_selection displays a menu and requests a selection, stopping only when there is a valid input. The choice is relayed to main, where other functions are called. Exiting on a `0` is done by main, since it is an important part of control flow and should be very visible instead of being obscured inside a function. Next come the functions to add students, remove students, enter grades, display names and grades, sort, and find the mean and median for the final grade. Notably, `remove_student` receives a pointer to `currentSize`, as the function may not succeed, so it needs to be able to modify `currentSize`. An alternate approach is shown with `add_student`, which returns a boolean to main, which then increments on success. 
+
+After these definitions comes main, which initializes the array `students` and the `currentSize` variable. It then requests a password, exiting with an unsuccessful code if it is incorrect. It begins the main loop with a menu request and then resulting actions encased in a switch statement. If the selection is `0`, the program exits with the successful 0 code. 
