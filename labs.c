@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
         switch (menu_selection())
         {
         case 0:
-            exit(1);
+            exit(0);
         case 1:
             // use pointer addition to set the new student
             add_student(students + currentSize) ?  printf("Added.\n") && currentSize++ : printf("Failed.\n");
