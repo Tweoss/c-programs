@@ -1,3 +1,6 @@
+This README is available as HTML with syntax highlighting at [this link](https://valour.vision/c-programs/) or [themed](https://valour.vision/c-programs/readme.html). 
+
+
 The program runs with verification of a password input. It displays a menu with the options to interact with the array of students. The array's length of valid inputs is kept in a variable in order to ensure that only valid values from the array are used and not outdated, deleted values. 
 
 Here is the source code with comments:
